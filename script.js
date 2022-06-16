@@ -56,3 +56,81 @@ searchBtn.addEventListener('click',(e)=>{
 })
 
 
+//? functionality to show details the food
+meal.addEventListener('click', getMealRecipe);
+function getMealRecipe(e){
+    e.preventDefault();
+    if(e.target.classList.contains('recipe-btn')){
+        let mealItem = e.target.parentElement.parentElement;
+        // console.log(mealItem)
+        // console.log(mealItem.dataset.id)
+
+
+        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealItem.dataset.id}`)
+        .then(response =>{ 
+            // console.log(response)
+            // console.log(response.json())
+            return response.json()})
+        .then(data =>{
+            // console.log(data)
+            mealRecipeModal(data.meals)
+        } )
+    }
+}
+
+//? function to create details card
+// create a modal
+function mealRecipeModal(meal){
+    // console.log(meal);
+    meal = meal[0];
+    console.log(meal);
+
+   
+    let title = document.createElement('h2')
+    title.setAttribute('class','recipe-title')
+    title.textContent = meal.strMeal
+    mealDetails.appendChild(title)
+
+    let cat = document.createElement('p')
+    cat.setAttribute('class','recipe-category')
+    cat.textContent = meal.strCategory
+    mealDetails.appendChild(cat)
+
+    let inst = document.createElement('div')
+    inst.setAttribute('class','recipe-instruct')
+    mealDetails.appendChild(inst)
+
+    let h3 = document.createElement('h3')
+    h3.textContent="Instructions: "
+    inst.appendChild(h3)
+
+    let p1 = document.createElement('p')
+    p1.textContent = meal.strInstructions
+    inst.appendChild(p1)
+
+    // let p2 = document.createElement('p')
+    // p2.textContent = food.strMeal
+    // inst.appendChild(p2)
+
+    let recipeImg = document.createElement('div')
+    recipeImg.setAttribute('class','recipe-meal-img')
+    mealDetails.appendChild(recipeImg)
+
+    let img = document.createElement('img')
+    img.setAttribute('src',meal.strMealThumb)
+    recipeImg.appendChild(img)
+
+
+    
+    let recipeLink = document.createElement('div')
+    recipeLink.classList.add('recipe-link')
+    mealDetails.appendChild(recipeLink)
+
+    let link = document.createElement('a')
+    link.setAttribute('href',meal.strYoutube)
+    // link.setAttribute('target ','_blank')
+    link.textContent = 'Watch Video'
+    recipeLink.appendChild(link)
+
+    mealDetails.parentElement.classList.add('showRecipe');
+}
